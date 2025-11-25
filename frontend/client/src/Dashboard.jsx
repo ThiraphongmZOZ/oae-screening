@@ -23,13 +23,18 @@ function Dashboard() {
   const [filterDate, setFilterDate] = useState(new Date().toISOString().slice(0, 7));
 
   // ฟังก์ชันดึงข้อมูล (เรียกใหม่ทุกครั้งที่ filterDate เปลี่ยน)
-  useEffect(() => {
+    useEffect(() => {
     setLoading(true);
     
-    // แยกปีและเดือนจาก string "2025-11"
-    let url = 'http://localhost:3001/api/dashboard-stats';
+    // 1. ดึง URL จาก Vercel (เหมือนใน App.jsx)
+    const apiUrl = import.meta.env.VITE_API_URL; 
+    
+    // 2. ใช้ apiUrl แทน localhost
+    let url = `${apiUrl}/api/dashboard-stats`; 
+
     if (filterDate) {
       const [year, month] = filterDate.split('-');
+      // เช็คด้วยว่าใน url มี ? หรือยัง (เผื่ออนาคต) แต่วิธีง่ายๆ คือต่อ string ไปเลย
       url += `?month=${month}&year=${year}`;
     }
 
