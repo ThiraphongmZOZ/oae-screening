@@ -1,0 +1,179 @@
+/* --- โครงสร้างหลัก --- */
+.dashboard-container {
+  max-width: 900px; /* กว้างกว่าหน้าฟอร์มหน่อย */
+  margin: 100px auto 40px auto; /* เว้นที่ให้ Navbar */
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: 'Sarabun', sans-serif;
+  color: #455A64;
+}
+
+.dashboard-title {
+  text-align: center;
+  color: #0288D1;
+  margin-bottom: 30px;
+}
+
+.loading, .error {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 150px;
+  color: #90A4AE;
+}
+
+/* --- 1. Summary Cards --- */
+.summary-cards {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.card {
+  flex: 1;
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(129, 212, 250, 0.2);
+  text-align: center;
+  border: 1px solid #E1F5FE;
+  transition: transform 0.2s;
+}
+
+.card:hover { transform: translateY(-5px); }
+
+.card h3 { margin: 0 0 10px 0; font-size: 1.1rem; color: #546E7A; }
+.card .number { font-size: 2.5rem; font-weight: bold; margin: 10px 0; color: #0277BD; }
+.card span { font-size: 0.9rem; color: #90A4AE; }
+
+/* สีเฉพาะการ์ด */
+.card.pass .number { color: #2E7D32; }
+.card.fail .number { color: #C62828; }
+
+
+/* --- 2. Charts Section --- */
+.charts-section {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.chart-card {
+  flex: 1;
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid #F5F5F5;
+}
+
+.chart-card h3 { text-align: center; margin-bottom: 20px; color: #455A64; }
+
+.chart-wrapper {
+    position: relative;
+    height: 300px; /* ความสูงกราฟแท่ง */
+    width: 100%;
+}
+.pie-wrapper {
+    height: auto;
+    max-width: 300px; /* จำกัดความกว้างกราฟวงกลมไม่ให้ใหญ่เกิน */
+    margin: 0 auto;
+}
+
+
+/* --- 3. Recent Activity Table --- */
+.recent-section {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+.recent-section h3 { margin-bottom: 20px; color: #455A64; }
+
+.table-container { overflow-x: auto; }
+
+.recent-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.recent-table th, .recent-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #E0F7FA;
+}
+
+.recent-table th {
+    background-color: #F1F8E9;
+    color: #546E7A;
+    font-weight: 600;
+}
+
+/* Badge สำหรับสถานะ Pass/Fail ในตาราง */
+.badge {
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    display: inline-block;
+}
+.badge.pass { background-color: #E8F5E9; color: #2E7D32; }
+.badge.fail { background-color: #FFEBEE; color: #C62828; }
+
+/* --- Mobile Responsive --- */
+@media (max-width: 768px) {
+  .dashboard-container { margin-top: 90px; padding: 15px; }
+  .summary-cards { flex-direction: column; }
+  .charts-section { flex-direction: column; }
+  .chart-wrapper { height: 250px; }
+  .card .number { font-size: 2rem; }
+}
+
+/* --- ส่วนหัว Dashboard แบบใหม่ (มีปุ่ม Filter) --- */
+.dashboard-header-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 15px;
+}
+
+.dashboard-title {
+  margin-bottom: 0 !important; /* ลบ margin เดิม */
+}
+
+.filter-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  padding: 8px 15px;
+  border-radius: 30px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  border: 1px solid #E1F5FE;
+}
+
+.filter-wrapper label {
+  font-weight: bold;
+  color: #546E7A;
+}
+
+.month-filter {
+  padding: 8px 12px;
+  border: 1px solid #B0BEC5;
+  border-radius: 20px;
+  font-family: 'Sarabun', sans-serif;
+  color: #455A64;
+  outline: none;
+  cursor: pointer;
+}
+
+.month-filter:focus {
+  border-color: #4FC3F7;
+}
+
+.no-data-text {
+  text-align: center;
+  color: #B0BEC5;
+  margin-top: 50px;
+}
