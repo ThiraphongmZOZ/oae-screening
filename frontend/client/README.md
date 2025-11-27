@@ -19,3 +19,4 @@ If you are developing a production application, we recommend using TypeScript wi
 
 
 npm install chart.js react-chartjs-2
+npm install react-router-dom

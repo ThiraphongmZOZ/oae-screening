@@ -1,29 +1,57 @@
-require('dotenv').config(); // 1. เรียกใช้ dotenv
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { Pool } = require('pg');
+const jwt = require('jsonwebtoken');
 
 const app = express();
-app.use(cors()); // อนุญาตให้ Frontend ยิงเข้ามาได้
+app.use(cors());
 app.use(bodyParser.json());
 
-// --- ส่วนการเชื่อมต่อ Database (แก้เพื่อ Cloud) ---
-// เราจะไม่ใส่ Link ตรงๆ ในโค้ด แต่จะให้ไปอ่านจาก Environment Variable ชื่อ DATABASE_URL แทน
+// --- ส่วนการเชื่อมต่อ Database ---
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL, 
+  connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false, // **สำคัญมาก** สำหรับ Neon ต้องใส่บรรทัดนี้
+    rejectUnauthorized: false, // สำหรับ Neon หรือ Cloud DB
   },
 });
 
-// --- ทดสอบว่าเชื่อมติดไหม (Optional) ---
+// --- ทดสอบเชื่อมต่อ ---
 pool.connect()
   .then(() => console.log('✅ เชื่อมต่อ Database สำเร็จแล้ว!'))
-  .catch(err => console.error('❌ เชื่อมต่อไม่ได้! ตรวจสอบ Environment Variable:', err.message));
+  .catch(err => console.error('❌ เชื่อมต่อไม่ได้:', err.message));
 
+const SECRET_KEY = process.env.JWT_SECRET || 'your-secret-key-change-this';
 
-// --- API 1: สำหรับบันทึกข้อมูล ---
+// --- Demo Users ---
+const demoUsers = [
+  { id: 1, username: 'admin', password: 'admin123', role: 'admin' }
+];
+
+// --- Middleware: ตรวจสอบ Token ---
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.status(401).json({ success: false, message: 'ไม่พบ token' });
+
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) return res.status(403).json({ success: false, message: 'Token ไม่ถูกต้อง' });
+    req.user = user;
+    next();
+  });
+};
+
+// --- Middleware: ตรวจสอบ Admin ---
+const isAdmin = (req, res, next) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'ไม่มีสิทธิ์ (เฉพาะ Admin)' });
+  }
+  next();
+};
+
+// --- API 1: บันทึกข้อมูล (เหมือนเดิม ไม่ต้องแก้) ---
 app.post('/api/save-screening', async (req, res) => {
   const { hn, birthDate, examDate, leftResult, rightResult } = req.body;
 
@@ -52,21 +80,23 @@ app.post('/api/save-screening', async (req, res) => {
   }
 });
 
-// --- API 2: สำหรับ Dashboard (รองรับการกรองเดือน) ---
+// --- API 2: Dashboard (🔴 แก้ไขให้รองรับ startDate / endDate) ---
 app.get('/api/dashboard-stats', async (req, res) => {
   try {
-    const { month, year } = req.query; // รับค่าจาก Frontend เช่น ?month=11&year=2025
+    // 1. รับค่า startDate และ endDate แทน month/year
+    const { startDate, endDate } = req.query; 
 
-    // สร้างเงื่อนไข WHERE (ถ้ามีการเลือกเดือน/ปี)
+    // สร้างเงื่อนไข WHERE สำหรับช่วงเวลา
     let dateFilter = "";
     let queryParams = [];
 
-    if (month && year) {
-      dateFilter = `WHERE EXTRACT(MONTH FROM exam_date) = $1 AND EXTRACT(YEAR FROM exam_date) = $2`;
-      queryParams = [month, year];
+    // ถ้ามีค่าส่งมา ให้กรองตามช่วงวันที่
+    if (startDate && endDate) {
+      dateFilter = `WHERE exam_date >= $1 AND exam_date <= $2`;
+      queryParams = [startDate, endDate];
     }
 
-    // 1. SQL นับสถิติ
+    // 2. SQL นับสถิติ (Count)
     const statsQuery = `
       SELECT
         COUNT(*) AS total,
@@ -80,20 +110,22 @@ app.get('/api/dashboard-stats', async (req, res) => {
       ${dateFilter}; 
     `;
     
-    // 2. SQL ดึงรายการล่าสุด
+    // 3. SQL ดึงรายการล่าสุด (List)
+    // เอา LIMIT 5 ออก เพื่อให้เห็นครบทุกรายการในช่วงเวลานั้น
     const recentQuery = `
       SELECT id, hn, exam_date, left_ear_result, right_ear_result
       FROM chackear_hearing_screenings
       ${dateFilter}
-      ORDER BY exam_date DESC, id DESC LIMIT 5;
+      ORDER BY exam_date DESC, id DESC; 
     `;
 
+    // รัน Query พร้อมกัน
     const [statsRes, recentRes] = await Promise.all([
       pool.query(statsQuery, queryParams),
       pool.query(recentQuery, queryParams)
     ]);
 
-    // จัดรูปแบบข้อมูล
+    // จัดรูปแบบข้อมูลส่งกลับ Frontend
     const s = statsRes.rows[0];
     const dashboardData = {
       summary: {
@@ -116,8 +148,136 @@ app.get('/api/dashboard-stats', async (req, res) => {
   }
 });
 
-// --- Start Server (สำคัญสำหรับ Render) ---
-const PORT = process.env.PORT || 3001; // ให้ Render กำหนด Port ถ้าไม่มีให้ใช้ 3001
+// --- API 3: ดึงข้อมูลการตรวจ 1 รายการ (GET) ---
+app.get('/api/exams/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      `SELECT id, hn, exam_date, left_ear_result, right_ear_result 
+       FROM chackear_hearing_screenings 
+       WHERE id = $1`,
+      [id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.json({ success: false, message: 'ไม่พบข้อมูล' });
+    }
+    
+    res.json({ success: true, data: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// --- API 4: อัปเดตการตรวจ (PUT) ---
+app.put('/api/exams/:id', async (req, res) => {
+  const { id } = req.params;
+  const { exam_date, left_ear_result, right_ear_result } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE chackear_hearing_screenings 
+       SET exam_date = $1, left_ear_result = $2, right_ear_result = $3
+       WHERE id = $4 
+       RETURNING *`,
+      [exam_date, left_ear_result, right_ear_result, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.json({ success: false, message: 'ไม่พบข้อมูล' });
+    }
+
+    res.json({ success: true, data: result.rows[0], message: 'บันทึกสำเร็จ' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// --- API ใหม่: ค้นหาการตรวจจาก HN (รองรับ partial match) ---
+app.get('/api/exams-by-hn/:hn', async (req, res) => {
+  const { hn } = req.params;
+  try {
+    const q = `
+      SELECT id, hn, exam_date, left_ear_result, right_ear_result
+      FROM chackear_hearing_screenings
+      WHERE hn ILIKE $1
+      ORDER BY exam_date DESC, id DESC
+    `;
+    const result = await pool.query(q, [`%${hn}%`]);
+    res.json({ success: true, data: result.rows });
+  } catch (err) {
+    console.error('Search by HN error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// --- API: Login ---
+app.post('/api/login', (req, res) => {
+  const { username, password } = req.body;
+  const user = demoUsers.find(u => u.username === username && u.password === password);
+
+  if (!user) {
+    return res.json({ success: false, message: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง' });
+  }
+
+  const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, SECRET_KEY, { expiresIn: '24h' });
+  res.json({ success: true, token, user: { id: user.id, username: user.username, role: user.role } });
+});
+
+// --- API: ลบการตรวจ (DELETE) - เฉพาะ Admin ---
+app.delete('/api/exams/:id', authenticateToken, isAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      `DELETE FROM chackear_hearing_screenings WHERE id = $1 RETURNING *`,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.json({ success: false, message: 'ไม่พบข้อมูล' });
+    }
+
+    res.json({ success: true, message: 'ลบข้อมูลสำเร็จ' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// --- API: Export CSV - เฉพาะ Admin ---
+app.get('/api/export-csv', authenticateToken, isAdmin, async (req, res) => {
+  const { startDate, endDate } = req.query;
+
+  try {
+    let query = `SELECT hn, exam_date, left_ear_result, right_ear_result FROM chackear_hearing_screenings`;
+    let params = [];
+
+    if (startDate && endDate) {
+      query += ` WHERE exam_date >= $1 AND exam_date <= $2`;
+      params = [startDate, endDate];
+    }
+
+    query += ` ORDER BY exam_date DESC`;
+
+    const result = await pool.query(query, params);
+    const data = result.rows;
+
+    // สร้าง CSV
+    let csv = 'HN,วันที่ตรวจ,หูซ้าย,หูขวา\n';
+    data.forEach(row => {
+      csv += `"${row.hn}","${new Date(row.exam_date).toLocaleDateString('th-TH')}","${row.left_ear_result}","${row.right_ear_result}"\n`;
+    });
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8-sig');
+    res.setHeader('Content-Disposition', 'attachment; filename=eare-data.csv');
+    res.send('\uFEFF' + csv);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// --- Start Server ---
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

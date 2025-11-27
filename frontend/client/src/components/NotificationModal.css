@@ -1,0 +1,213 @@
+/* NotificationModal.css */
+
+/* พื้นหลังจางๆ สีดำ (หรือสีชมพูตามธีม) เมื่อแจ้งเตือนเด้งขึ้นมา */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* สีดำจางๆ เพื่อเน้น Popup */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* ตัวการ์ดสีขาว */
+.modal-card {
+  background: white;
+  width: 320px;
+  padding: 40px 30px 30px; /* เว้นด้านบนเยอะหน่อยให้ไอคอน */
+  border-radius: 20px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: slideUp 0.3s ease-in-out;
+}
+
+/* วงกลมรอบไอคอนกระดิ่งที่ลอยอยู่ */
+.icon-container {
+  width: 80px;
+  height: 80px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: -40px; /* ดึงให้ลอยขึ้นไปครึ่งหนึ่ง */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ไอคอนกระดิ่ง (ใช้ Emoji หรือ SVG ก็ได้) */
+.bell-icon {
+  font-size: 40px;
+}
+
+/* จุดแจ้งเตือนสีแดงเล็กๆ */
+.notification-badge {
+  position: absolute;
+  top: 15px;
+  right: 18px;
+  width: 15px;
+  height: 15px;
+  background-color: #ff3b30;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+/* หัวข้อ (Notification) */
+.modal-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+/* ข้อความบรรยาย */
+.modal-message {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 25px;
+}
+/* NotificationModal.css */
+
+/* พื้นหลังจางๆ สีดำ (หรือสีชมพูตามธีม) เมื่อแจ้งเตือนเด้งขึ้นมา */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* สีดำจางๆ เพื่อเน้น Popup */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* ตัวการ์ดสีขาว */
+.modal-card {
+  background: white;
+  width: 320px;
+  padding: 40px 30px 30px; /* เว้นด้านบนเยอะหน่อยให้ไอคอน */
+  border-radius: 20px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: slideUp 0.3s ease-in-out;
+}
+
+/* วงกลมรอบไอคอนกระดิ่งที่ลอยอยู่ */
+.icon-container {
+  width: 80px;
+  height: 80px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: -40px; /* ดึงให้ลอยขึ้นไปครึ่งหนึ่ง */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ไอคอนกระดิ่ง (ใช้ Emoji หรือ SVG ก็ได้) */
+.bell-icon {
+  font-size: 40px;
+}
+
+/* จุดแจ้งเตือนสีแดงเล็กๆ */
+.notification-badge {
+  position: absolute;
+  top: 15px;
+  right: 18px;
+  width: 15px;
+  height: 15px;
+  background-color: #ff3b30;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+/* หัวข้อ (Notification) */
+.modal-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+/* ข้อความบรรยาย */
+.modal-message {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 25px;
+}
+
+/* ปุ่มกด (Open/Close) */
+.modal-button {
+  background-color: #ff3b30; /* สีแดงตามรูป */
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 40px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(255, 59, 48, 0.3);
+  transition: transform 0.2s;
+}
+
+.modal-button:hover {
+  transform: scale(1.05);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+/* ปุ่มกด (Open/Close) */
+.modal-button {
+  background-color: #ff3b30; /* สีแดงตามรูป */
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 40px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(255, 59, 48, 0.3);
+  transition: transform 0.2s;
+}
+
+.modal-button:hover {
+  transform: scale(1.05);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

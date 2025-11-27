@@ -1,0 +1,276 @@
+/* Navbar.css */
+
+/* Navbar Container */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+/* Brand (โลโก้) */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  width: 125px;
+}
+
+.nav-logo-icon {
+  font-size: 22px;
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+  width: 66px;
+  height: 66px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0277bd;
+  box-shadow: 0 4px 12px rgba(2, 119, 189, 0.2);
+}
+
+.nav-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-title-main {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #0277bd;
+  line-height: 1.2;
+}
+
+
+.nav-title-sub {
+  font-size: 0.8rem;
+  color: #78909c;
+  font-weight: 500;
+}
+.nav-title-sub1 {
+  font-size: 0.7rem;
+  color: #78909c;
+  font-weight: 500;
+}
+
+/* เมนู */
+.nav-menu {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+/* Menu Item */
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  color: #90a4ae;
+  background: transparent;
+  border: none;
+  font-family: 'Sarabun', sans-serif;
+}
+
+.nav-item-icon {
+  font-size: 1.2rem;
+  margin-bottom: 2px;
+}
+
+.nav-item-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.nav-item:hover {
+  background-color: #f5f5f5;
+  color: #546e7a;
+}
+
+.nav-item.active {
+  background-color: #e1f5fe;
+  color: #0277bd;
+}
+
+.nav-item.active .nav-item-icon {
+  transform: scale(1.1);
+}
+
+/* User Section */
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 20px;
+  border-left: 1px solid #e2e8f0;
+  padding-left: 20px;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.9rem;
+}
+
+.user-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.user-badge.admin {
+  background: #ffe082;
+  color: #ff6f00;
+}
+
+.user-badge.user {
+  background: #b3e5fc;
+  color: #01579b;
+}
+
+.logout-btn {
+  padding: 6px 12px;
+  background: #e2e8f0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #2d3748;
+  transition: all 0.3s;
+  font-size: 0.85rem;
+  font-family: 'Sarabun', sans-serif;
+}
+
+.logout-btn:hover {
+  background: #cbd5e0;
+}
+
+.export-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.3s;
+  color: #90a4ae;
+}
+
+.export-btn:hover {
+  background: #fff9c4;
+  color: #f57f17;
+}
+
+/* Responsive */
+/* --- RESPONSIVE FIX (แก้ปัญหาจอล้น) --- */
+
+/* Navbar.css (ส่วนล่างสุด แก้ทับอันเดิมได้เลย) */
+
+/* สำหรับ Tablet และ Mobile */
+@media (max-width: 900px) {
+  .nav-title-sub {
+    display: flex; /* ✅ เปลี่ยนจาก none เป็น flex หรือลบบรรทัด display ทิ้งไปเลย */
+    transform: scale(1.1); /* แนะนำ: ย่อขนาดลงหน่อยเพื่อไม่ให้เบียดกัน */
+    transform-origin: left; /* ซ่อนชื่อย่อย */
+  }
+}
+
+/* สำหรับ Mobile (มือถือ) */
+@media (max-width: 600px) {
+  .navbar {
+    padding: 0 10px; /* ลดขอบซ้ายขวาของ Navbar */
+    height: 60px;    /* ลดความสูง Navbar นิดหน่อย */
+  }
+
+  /* 1. ส่วนโลโก้: ซ่อนชื่อ EARE ให้เหลือแค่รูป */
+  .nav-text {
+    display: flex; /* ✅ เปลี่ยนจาก none เป็น flex หรือลบบรรทัด display ทิ้งไปเลย */
+    transform: scale(0.7); /* แนะนำ: ย่อขนาดลงหน่อยเพื่อไม่ให้เบียดกัน */
+    transform-origin: left;
+  }
+  .nav-logo-icon {
+    width: 35px;
+    height: 35px;
+    font-size: 20px; /* ลดขนาดไอคอนโลโก้ */
+  }
+
+  /* 2. ส่วนเมนู: ปรับให้ชิดขวา */
+  .nav-menu {
+    flex: 1;             /* ให้ขยายเต็มพื้นที่ตรงกลาง */
+    display: flex;       /* (สำคัญ) ต้องมี display: flex เพื่อให้จัดตำแหน่งได้ */
+    justify-content: flex-end; /* ✅ แก้ตรงนี้: ดันทุกอย่างไปชิดขวา */
+    
+    overflow-x: auto;    /* ให้เลื่อนซ้ายขวาได้ถ้าล้น */
+    white-space: nowrap; /* ห้ามปุ่มขึ้นบรรทัดใหม่ */
+    padding-left: 5px;
+    padding-right: 5px;
+    
+    /* ซ่อน Scrollbar */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .nav-menu::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ปรับขนาดปุ่มเมนูให้เล็กลง */
+  .nav-item {
+    padding: 4px 6px; /* ลด padding ลงอีกนิดเพื่อให้พื้นที่พอสำหรับข้อความ */
+    min-width: auto;
+    flex-shrink: 0;
+  }
+  .nav-item-icon {
+    font-size: 1rem;
+  }
+  .nav-item-text {
+    font-size: 0.65rem; /* ✅ ยังคงแสดงข้อความไว้ตามเดิม */
+    display: block;      /* ยืนยันว่าต้องแสดง */
+  }
+
+  /* 3. ส่วน User/Admin ด้านขวา */
+  .navbar-user {
+    margin-left: 5px;
+    padding-left: 5px;
+    gap: 5px;
+    flex-shrink: 0;
+    border-left: 1px solid #eee;
+  }
+
+  /* ปุ่ม Admin / User Badge */
+  .user-badge {
+    padding: 2px 6px;
+    font-size: 0.65rem;
+  }
+
+  /* ปุ่ม Logout */
+  .logout-btn {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+  
+  /* ซ่อนชื่อ User ถ้ามี (เพื่อประหยัดที่) */
+  .user-name {
+    display: none;
+  }
+}

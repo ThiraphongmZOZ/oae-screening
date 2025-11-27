@@ -1,0 +1,387 @@
+/* =========================================
+   FormPage.css
+/* =========================================
+   MAIN CONTAINER & LAYOUT  
+   ========================================= */
+
+.container {
+  width: 95%;
+  max-width: 800px; /* ขยายจาก 500 เป็น 700px */
+  margin-top: 10px; /* เว้นระยะหัวให้เยอะขึ้น */
+  margin-bottom: 50px;
+}
+.form-card {
+  background: #FFFFFF;
+  padding: 40px; /* เพิ่ม Padding */
+  border-radius: 20px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08); /* เงาฟุ้งๆ นุ่มๆ */
+  border: 1px solid #E1F5FE;
+  ;
+}
+
+/* =========================================
+   FORM STYLING
+   ========================================= */
+
+.form-header {
+  text-align: center;
+  padding-bottom: 0px;
+  border-bottom: 0px dashed #E1F5FE; 
+}
+
+.form-header h2 {
+  font-size: 1.2rem; /* หัวข้อใหญ่ขึ้น */
+  color: #0277BD;
+  margin: 0 0 10px 0;
+}
+
+/* --- 3.1 Inputs & Labels --- */
+.input-group {
+  margin-bottom: 5px;
+}
+
+.label-text {
+  font-size: 0.9rem; /* Label ใหญ่ขึ้น */
+  font-weight: 600;
+  color: #37474F;
+  margin-bottom: 1px;
+  display: block;
+}
+
+input {
+  width: 100%;
+  padding: 15px; /* ช่องกรอกใหญ่ขึ้น */
+  border: 2px solid #E0E0E0;
+  border-radius: 12px;
+  font-size: 1.1rem; /* ตัวหนังสือในช่องใหญ่ขึ้น */
+  color: #333;
+  background-color: #fff;
+  transition: all 0.3s;
+  box-sizing: border-box;
+}
+
+input:focus {
+  border-color: #29B6F6;
+  box-shadow: 0 0 0 4px rgba(41, 182, 246, 0.15);
+  outline: none;
+}
+
+/* Fix for dark mode date picker */
+input[type="date"] {
+  color-scheme: light;
+  cursor: pointer;
+}
+
+/* --- 3.2 Specific Form Sections --- */
+/* =========================================
+   MODERN RESULT SECTION (Compact & Clean)
+   ========================================= */
+
+.result-section {
+  background: #E1F5FE; /* พื้นหลังสีเทาจางๆ */
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #E2E8F0;
+  margin-top: 10px;
+}
+
+/* Grid Layout: จัดหูซ้ายขวาให้อยู่คู่กัน หรือซ้อนกันตามหน้าจอ */
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* ค่าเริ่มต้น มือถือ: เรียงลงมา */
+  gap: 20px;
+}
+
+/* แถวของแต่ละหู (Ear Row) */
+.ear-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ear-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ear-icon {
+  background: #ffffff;
+  color: #009688;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+/* กลุ่มปุ่มตัวเลือก (Choice Group) */
+.choice-group {
+  display: flex;
+  gap: 10px; /* ระยะห่างระหว่างปุ่ม */
+}
+
+/* ปุ่มตัวเลือก (Choice Button) - Compact Style */
+.choice-btn {
+  flex: 1; /* ขยายเต็มพื้นที่เท่ากัน */
+  padding: 10px 12px; /* ขนาดกะทัดรัด */
+  border: 1px solid #CBD5E1;
+  border-radius: 50px; /* ทรงแคปซูล */
+  background: #FFFFFF;
+  color: #94A3B8;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.choice-btn:hover {
+  background: #F1F5F9;
+  transform: translateY(-1px);
+}
+
+/* --- Active States (เมื่อถูกเลือก) --- */
+
+/* PASS: สีเขียวสวยๆ */
+.choice-btn.pass.active {
+  background: #4ADE80; /* เขียวสดใส */
+  border-color: #4ADE80;
+  color: white;
+  box-shadow: 0 4px 12px rgba(74, 222, 128, 0.4);
+}
+
+/* FAIL: สีแดงสวยๆ */
+.choice-btn.fail.active {
+  background: #F87171; /* แดงละมุน */
+  border-color: #F87171;
+  color: white;
+  box-shadow: 0 4px 12px rgba(248, 113, 113, 0.4);
+}
+
+/* ไอคอนในปุ่ม */
+.btn-icon {
+  font-size: 1rem;
+}
+
+/* Tablet & Desktop: แบ่ง 2 คอลัมน์ */
+@media (min-width: 600px) {
+  .result-grid {
+    grid-template-columns: 1fr 1fr; /* ซ้ายขวาอยู่บรรทัดเดียวกัน */
+    gap: 30px;
+  }
+}
+/* --- 3.4 Submit Button --- */
+.submit-btn {
+  width: 100%;
+  margin-top: 40px;
+  padding: 18px;
+  background: linear-gradient(90deg, #0288D1, #03A9F4);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.3rem; /* ปุ่มใหญ่สะใจ */
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(3, 169, 244, 0.3);
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.submit-btn:hover,
+.submit-btn:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(3, 169, 244, 0.4);
+  outline: none; /* ไม่ต้องใช้ outline เพราะมี shadow ที่ชัดเจนแล้ว */
+}
+
+.submit-btn:active {
+  transform: translateY(0); /* ทำให้ปุ่มยุบกลับมาที่เดิม */
+  box-shadow: 0 5px 15px rgba(3, 169, 244, 0.3);
+  transition: transform 0.1s, box-shadow 0.1s; /* ทำให้การยุบตัวเร็ว */
+}
+
+/* =========================================
+   COMPONENTS (Popups, etc.)
+   ========================================= */
+
+.success-popup, .error-popup {
+  position: fixed;
+  top: 80px; /* ตำแหน่งใต้ Navbar */
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 15px 25px;
+  border-radius: 8px;
+  color: rgb(0, 0, 0);
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1001; /* ทำให้แสดงผลเหนือ Navbar */
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out, top 0.5s ease-in-out;
+}
+.success-popup {
+  background-color: #3bd1f7d7; /* สีเขียว */
+}
+
+.error-popup {
+  background-color: #f86c53e3; /* สีแดง */
+}
+
+/* =========================================
+   RESPONSIVE DESIGN (Mobile & Tablet)
+   ========================================= */
+
+/* --- Tablet & Smaller Desktops --- */
+@media (max-width: 950px) {
+  .container {
+    width: 100%;
+    padding: 25px; /* ลดขอบนอก */
+    margin-top: 69px; /* ลดระยะหัวลงนิดนึง */
+    margin-right: 80px; /* เพิ่มระยะขอบขวา */
+  }
+  .form-card { 
+    padding: 25px; /* ลด padding ด้านใน */
+  }
+  .ear-section {
+    flex-direction: column; 
+  }
+  .date-row {
+    flex-direction: column;
+  }
+  .form-header h2 {
+    font-size: 1.2rem;
+  }
+  input {
+    font-size: 1rem; /* ลดขนาดตัวอักษร input นิดนึงไม่ให้ล้น */
+  }
+}
+
+/* --- Mobile Phones --- */
+@media (max-width: 768px) {
+  .form-card {
+    padding: 20px; /* ลด padding ด้านข้างอีก */
+  }
+  .date-row {
+    gap: 0 !important; /* ลดระยะห่าง */
+  }
+}
+
+/* Toast container (มุมล่างขวา) */
+.toast-container {
+  position: fixed;
+  right: 20px;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Base toast - pastel blue glass */
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  min-width: 260px;
+  max-width: 380px;
+  background: linear-gradient(135deg, rgba(230,245,255,0.9), rgba(220,240,255,0.75));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(8, 40, 80, 0.06);
+  padding: 12px;
+  border: 1px solid rgba(127, 191, 255, 0.18);
+  transform-origin: bottom right;
+  animation: toastIn 300ms cubic-bezier(.2,.9,.2,1);
+  transition: transform 160ms ease, opacity 160ms ease;
+  color: #06345f;
+}
+
+/* Left icon block */
+.toast-left {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+/* Body text */
+.toast-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toast-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #04315a;
+}
+
+.toast-text {
+  font-size: 13px;
+  color: rgba(4,49,90,0.88);
+}
+
+/* Close button */
+.toast-close {
+  background: transparent;
+  border: none;
+  color: rgba(4,49,90,0.8);
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: 10px;
+  padding: 6px;
+  border-radius: 8px;
+}
+.toast-close:hover {
+  background: rgba(6,52,95,0.06);
+}
+
+/* Success variant - soft pastel blue */
+.toast-success {
+  border-left: 4px solid #7fbfff; /* pastel accent */
+}
+.toast-success .toast-left {
+  background: linear-gradient(135deg, rgba(127,191,255,0.16), rgba(157,213,255,0.09));
+}
+.toast-success .toast-icon {
+  font-size: 20px;
+  color: #0a66b8;
+}
+
+/* Error variant - muted pastel blue (same family, gentle) */
+.toast-error {
+  border-left: 4px solid #95c8ff;
+}
+.toast-error .toast-left {
+  background: linear-gradient(135deg, rgba(149,200,255,0.14), rgba(187,219,255,0.07));
+}
+.toast-error .toast-icon {
+  font-size: 18px;
+  color: #0b5aa8;
+}
+
+/* Slide-in animation */
+@keyframes toastIn {
+  0% { transform: translateY(14px) scale(.98); opacity: 0 }
+  100% { transform: translateY(0) scale(1); opacity: 1 }
+}
+
+
+
