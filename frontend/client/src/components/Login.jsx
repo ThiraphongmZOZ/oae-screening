@@ -84,7 +84,7 @@ function Login() {
         </div>
 
         <div className="login-footer">
-          <Link to="/" className="back-link">← กลับหน้าหลัก</Link>
+          <Link to="/" className="back-link">← Back to Home</Link>
         </div>
       </div>
     </div>
