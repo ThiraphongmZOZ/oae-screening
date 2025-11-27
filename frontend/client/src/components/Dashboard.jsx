@@ -11,19 +11,16 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEle
 function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  // Quick search state (สำหรับเชื่อมต่อกับหน้า edit/search)
   const [quickHn, setQuickHn] = useState('');
   const [quickResults, setQuickResults] = useState([]);
   const [quickLoading, setQuickLoading] = useState(false);
   const [quickError, setQuickError] = useState('');
   
-  // --- ฟังก์ชันช่วยแปลงเวลาให้เป็น Local Time (แก้ปัญหา Timezone) ---
   const getLocalISOString = (date) => {
     const offset = date.getTimezoneOffset() * 60000;
     return new Date(date.getTime() - offset).toISOString().split('T')[0];
   };
 
-  // ตั้งค่าเริ่มต้น: วันแรกของเดือน - วันปัจจุบัน
   const today = new Date();
   const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
   
@@ -137,6 +134,57 @@ function Dashboard() {
       alert('เกิดข้อผิดพลาด');
     }
   };
+
+  // --- ฟังก์ชัน Export จากช่วงเวลาที่เลือก ---
+  const handleExportFromDashboard = async () => {
+    if (!startDate || !endDate) {
+      alert('กรุณาเลือกช่วงเวลา');
+      return;
+    }
+
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const res = await fetch(
+        `${apiUrl}/api/export-csv?startDate=${startDate}&endDate=${endDate}`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+          alert('สิทธิ์ไม่พอ กรุณาเข้าสู่ระบบใหม่');
+          return;
+        }
+        throw new Error('Export failed');
+      }
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `eare-data-${startDate}-to-${endDate}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
+      alert('ดาวน์โหลดสำเร็จ!');
+    } catch (err) {
+      console.error(err);
+      alert('ไม่สามารถดาวน์โหลดได้ ลองอีกครั้ง');
+    }
+  };
+
+  // --- ฟัง event export-requested จาก Navbar ---
+  useEffect(() => {
+    const handleExportRequest = () => {
+      handleExportFromDashboard();
+    };
+
+    window.addEventListener('export-requested', handleExportRequest);
+    return () => window.removeEventListener('export-requested', handleExportRequest);
+  }, [startDate, endDate, token]);
 
   if (loading) return (
     <div className="dashboard-container">

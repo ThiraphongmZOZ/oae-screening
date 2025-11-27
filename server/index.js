@@ -249,23 +249,35 @@ app.get('/api/export-csv', authenticateToken, isAdmin, async (req, res) => {
   const { startDate, endDate } = req.query;
 
   try {
-    let query = `SELECT hn, exam_date, left_ear_result, right_ear_result FROM chackear_hearing_screenings`;
+    let query = `
+      SELECT 
+        chs.id,
+        chs.hn,
+        c.birth_date,
+        chs.exam_date,
+        chs.left_ear_result,
+        chs.right_ear_result
+      FROM chackear_hearing_screenings chs
+      LEFT JOIN chackear c ON chs.hn = c.hn
+    `;
     let params = [];
 
     if (startDate && endDate) {
-      query += ` WHERE exam_date >= $1 AND exam_date <= $2`;
+      query += ` WHERE chs.exam_date >= $1 AND chs.exam_date <= $2`;
       params = [startDate, endDate];
     }
 
-    query += ` ORDER BY exam_date DESC`;
+    query += ` ORDER BY chs.exam_date DESC`;
 
     const result = await pool.query(query, params);
     const data = result.rows;
 
     // สร้าง CSV
-    let csv = 'HN,วันที่ตรวจ,หูซ้าย,หูขวา\n';
+    let csv = 'HN,วันเกิด,วันที่ตรวจ,หูซ้าย,หูขวา\n';
     data.forEach(row => {
-      csv += `"${row.hn}","${new Date(row.exam_date).toLocaleDateString('th-TH')}","${row.left_ear_result}","${row.right_ear_result}"\n`;
+      const birthDate = row.birth_date ? new Date(row.birth_date).toLocaleDateString('th-TH') : '-';
+      const examDate = new Date(row.exam_date).toLocaleDateString('th-TH');
+      csv += `"${row.hn}","${birthDate}","${examDate}","${row.left_ear_result}","${row.right_ear_result}"\n`;
     });
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8-sig');
